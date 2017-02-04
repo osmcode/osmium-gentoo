@@ -31,6 +31,7 @@ DEPEND="${RDEPEND}
 
 src_prepare() {
     epatch "${FILESDIR}/use_doc.patch"
+    epatch "${FILESDIR}/threads.patch"
     epatch_user
 }
 
