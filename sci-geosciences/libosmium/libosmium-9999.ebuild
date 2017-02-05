@@ -26,12 +26,15 @@ RDEPEND="
     dev-libs/boost:=
 "
 DEPEND="${RDEPEND}
-    doc? ( app-doc/doxygen )
+    doc? (
+        app-doc/doxygen
+        media-gfx/graphviz
+    )
 "
 
 src_prepare() {
-    epatch "${FILESDIR}/use_doc.patch"
     epatch "${FILESDIR}/threads.patch"
+    epatch "${FILESDIR}/install_doxyfile.patch"
     epatch_user
 }
 
@@ -41,6 +44,8 @@ src_unpack() {
 
 src_configure() {
     local mycmakeargs=(
+        -DCMAKE_INSTALL_DOCDIR=share/doc/${P}
+
         $(cmake-utils_use gdalcpp   INSTALL_GDALCPP)
         $(cmake-utils_use protozero INSTALL_PROTOZERO)
         $(cmake-utils_use utfcpp    INSTALL_UTFCPP)
@@ -51,10 +56,20 @@ src_configure() {
     cmake-utils_src_configure
 }
 
+src_compile() {
+    cmake-utils_src_compile
+    if use doc; then
+        emake -C "${BUILD_DIR}" doc
+    fi
+}
+
 src_test() {
     cmake-utils_src_test
 }
 
 src_install() {
+    if ! use doc ; then
+        rm "README.md"
+    fi
     cmake-utils_src_install
 }
