@@ -33,7 +33,6 @@ DEPEND="${RDEPEND}
 "
 
 src_prepare() {
-    epatch "${FILESDIR}/threads.patch"
     epatch "${FILESDIR}/install_doxyfile.patch"
     epatch_user
 }
